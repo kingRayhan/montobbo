@@ -11,7 +11,9 @@ export const getComments = query({
     return await ctx.db
       .query("comments")
       .filter(
-        (q) => q.eq("appId", appId) && q.eq("ownerIdentifier", ownerIdentifier)
+        (q) =>
+          q.eq(q.field("app"), appId) &&
+          q.eq(q.field("ownerIdentifier"), ownerIdentifier)
       )
       .order("desc")
       .collect();
@@ -34,7 +36,7 @@ export const createComment = mutation({
 
     const fetchedApp = await ctx.db
       .query("apps")
-      .filter((q) => q.eq("appKey", appKey))
+      .filter((q) => q.eq(q.field("appKey"), appKey))
       .first();
 
     if (!fetchedApp) {

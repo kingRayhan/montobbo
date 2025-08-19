@@ -1,3 +1,5 @@
+const APP_URL = "http://localhost:3000";
+
 (function () {
   "use strict";
 
@@ -8,8 +10,8 @@
   // Default configuration
   const defaultConfig = {
     dom: "#livecomments",
-    apiUrl: "http://localhost:3000",
-    theme: "light",
+    ownerIdentifier: "",
+    appKey: "",
   };
 
   // Merge user config with defaults
@@ -30,7 +32,7 @@
   function loadStyles() {
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = `${config.apiUrl}/widget.css`;
+    link.href = `${APP_URL}/widget.css`;
     document.head.appendChild(link);
   }
 
@@ -60,12 +62,12 @@
     // Create iframe for the widget
     const iframe = document.createElement("iframe");
     const params = new URLSearchParams({
-      theme: config.theme,
-      apiUrl: config.apiUrl,
-      foo: config.foo || "",
+      appKey: config.appKey || "",
+      ownerIdentifier: config.ownerIdentifier || "",
+      origin: window.location.origin,
     });
 
-    iframe.src = `${config.apiUrl}/widget?${params.toString()}`;
+    iframe.src = `${APP_URL}/widget?${params.toString()}`;
     iframe.style.width = "100%";
     iframe.style.border = "none";
     iframe.style.minHeight = "200px";
