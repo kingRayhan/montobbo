@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LiveComments Integration Test</title>
+    <style>
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        line-height: 1.6;
+      }
+
+      .article {
+        margin-bottom: 40px;
+      }
+
+      .article h1 {
+        color: #333;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+      }
+
+      .article p {
+        color: #666;
+        margin-bottom: 20px;
+      }
+
+      .comments-section {
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 1px solid #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="article">
+      <h1>My Awesome Blog Post</h1>
+      <p>
+        This is a sample blog post content. Lorem ipsum dolor sit amet,
+        consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore
+        et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+        exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      </p>
+
+      <p>
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+        dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+    </div>
+
+    <div class="comments-section">
+      <!-- LiveComments Integration -->
+      <div id="livecomments"></div>
+
+      <script>
+        window.livecommentsConfig = {
+          dom: "#livecomments",
+          theme: "light",
+          foo: "bar",
+          apiUrl: "http://localhost:3000",
+        };
+      </script>
+      <script src="http://localhost:3000/embed.js" async></script>
+    </div>
+
+    <!-- <script>
+      // Optional: Test different configurations
+      setTimeout(() => {
+        console.log("LiveComments Config:", window.livecommentsConfig);
+        console.log("LiveComments Loaded:", window.LiveCommentsLoaded);
+      }, 2000);
+    </script> -->
+  </body>
+</html>
