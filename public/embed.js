@@ -30,10 +30,10 @@ const APP_URL = "http://localhost:3000";
 
   // Load CSS styles
   function loadStyles() {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = `${APP_URL}/widget.css`;
-    document.head.appendChild(link);
+    // const link = document.createElement("link");
+    // link.rel = "stylesheet";
+    // // link.href = `${APP_URL}/widget.css`;
+    // document.head.appendChild(link);
   }
 
   // Create and render the widget
