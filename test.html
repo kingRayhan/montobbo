@@ -54,26 +54,14 @@
     </div>
 
     <div class="comments-section">
-      <!-- LiveComments Integration -->
-      <div id="livecomments"></div>
+      <div id="comments"></div>
 
       <script>
         window.livecommentsConfig = {
-          dom: "#livecomments",
-          theme: "light",
-          foo: "bar",
-          apiUrl: "http://localhost:3000",
+          dom: "#comments",
         };
       </script>
       <script src="http://localhost:3000/embed.js" async></script>
     </div>
-
-    <!-- <script>
-      // Optional: Test different configurations
-      setTimeout(() => {
-        console.log("LiveComments Config:", window.livecommentsConfig);
-        console.log("LiveComments Loaded:", window.LiveCommentsLoaded);
-      }, 2000);
-    </script> -->
   </body>
 </html>

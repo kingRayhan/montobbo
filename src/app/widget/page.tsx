@@ -1,10 +1,9 @@
 "use client";
 
 import React from "react";
+import CommentWidget from "./CommentWidget";
 
-const page = () => {
-  const [count, setCount] = React.useState(0);
-
+const WidgetPage = () => {
   // Function to notify parent about height changes
   const notifyHeightChange = React.useCallback(() => {
     const height = Math.max(
@@ -45,70 +44,13 @@ const page = () => {
   // Notify when count changes (content changes)
   React.useEffect(() => {
     notifyHeightChange();
-  }, [count, notifyHeightChange]);
+  }, [notifyHeightChange]);
 
   return (
-    <div style={{ padding: "20px" }}>
-      {Array.from({ length: count + 5 }).map((_, i) => (
-        <h1
-          key={i}
-          className="text-3xl border-b border-red-100"
-          style={{
-            fontSize: "1.5rem",
-            borderBottom: "1px solid #fecaca",
-            marginBottom: "10px",
-            padding: "10px 0",
-          }}
-        >
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam omnis
-          odio earum labore, modi sed non voluptatem voluptatibus, quibusdam
-          sint quasi numquam autem quia mollitia fugiat debitis! Modi, iure
-          fugiat!
-        </h1>
-      ))}
-
-      <div
-        style={{
-          marginTop: "20px",
-          padding: "20px",
-          backgroundColor: "#f3f4f6",
-          borderRadius: "8px",
-        }}
-      >
-        <button
-          onClick={() => {
-            window.parent.postMessage({ type: "trigger", count }, "*");
-          }}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#3b82f6",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            marginRight: "10px",
-            cursor: "pointer",
-          }}
-        >
-          Trigger message
-        </button>
-
-        <h1 style={{ margin: "10px 0", fontSize: "1.2rem" }}>Count: {count}</h1>
-        <button
-          onClick={() => setCount(count + 1)}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#10b981",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          Add More Content (Increment)
-        </button>
-      </div>
-    </div>
+    <>
+      <CommentWidget />
+    </>
   );
 };
 
-export default page;
+export default WidgetPage;

@@ -84,7 +84,7 @@
       // Check if message is from our iframe
       if (event.source === iframe.contentWindow) {
         if (event.data.type === "resize") {
-          console.log("Resizing iframe to:", event.data.height + "px");
+          // console.log("Resizing iframe to:", event.data.height + "px");
           iframe.style.height = event.data.height + "px";
         } else if (event.data.type === "trigger") {
           console.log("Trigger event:", event);
