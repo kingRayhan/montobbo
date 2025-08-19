@@ -47,9 +47,9 @@ const WidgetPage = () => {
   }, [notifyHeightChange]);
 
   return (
-    <>
+    <div className="p-1">
       <CommentWidget />
-    </>
+    </div>
   );
 };
 

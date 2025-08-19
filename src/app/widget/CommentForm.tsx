@@ -64,61 +64,59 @@ const CommentForm: React.FC<CommentFormProps> = ({
   };
 
   return (
-    <div>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(handleFormSubmit)}
-          className="p-4 space-y-4"
-        >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name *</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter your name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleFormSubmit)}
+        className="space-y-4"
+      >
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name *</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter your name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          {/* Comment Body */}
-          <FormField
-            control={form.control}
-            name="body"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Comment *</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder={placeholder}
-                    className="resize-none"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        {/* Comment Body */}
+        <FormField
+          control={form.control}
+          name="body"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Comment *</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder={placeholder}
+                  className="resize-none"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          {/* Action Buttons */}
-          <div className="flex justify-end space-x-3">
-            <Button
-              type="submit"
-              disabled={!form.formState.isValid || form.formState.isSubmitting}
-              className="flex items-center space-x-2"
-            >
-              {form.formState.isSubmitting && (
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-              )}
-              <span>Post Comment</span>
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </div>
+        {/* Action Buttons */}
+        <div className="flex justify-end space-x-3">
+          <Button
+            type="submit"
+            disabled={!form.formState.isValid || form.formState.isSubmitting}
+            className="flex items-center space-x-2"
+          >
+            {form.formState.isSubmitting && (
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+            )}
+            <span>Post Comment</span>
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 };
 

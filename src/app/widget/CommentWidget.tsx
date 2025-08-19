@@ -113,7 +113,7 @@ const CommentWidget = () => {
   }
 
   return (
-    <div className="comment-widget p-10">
+    <>
       <CommentForm
         onSubmit={async (payload) => {
           console.log("Submitting comment:", payload);
@@ -136,7 +136,7 @@ const CommentWidget = () => {
           />
         </div>
       )}
-    </div>
+    </>
   );
 };
 
