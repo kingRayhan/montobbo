@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import CommentWidget from "./CommentWidget";
 
 const WidgetPage = () => {
@@ -48,7 +48,18 @@ const WidgetPage = () => {
 
   return (
     <div className="p-1">
-      <CommentWidget />
+      <Suspense
+        fallback={
+          <div className="flex items-center justify-center p-8">
+            <div className="flex items-center space-x-2">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+              <span className="text-gray-600">Loading...</span>
+            </div>
+          </div>
+        }
+      >
+        <CommentWidget />
+      </Suspense>
     </div>
   );
 };
