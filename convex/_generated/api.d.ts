@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as application from "../application.js";
 import type * as comments from "../comments.js";
+import type * as external_auth from "../external-auth.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -27,6 +28,7 @@ import type * as comments from "../comments.js";
 declare const fullApi: ApiFromModules<{
   application: typeof application;
   comments: typeof comments;
+  "external-auth": typeof external_auth;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

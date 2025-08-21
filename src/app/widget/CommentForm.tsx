@@ -42,11 +42,13 @@ export type CommentFormData = z.infer<typeof commentSchema>;
 interface CommentFormProps {
   onSubmit?: (data: CommentFormData) => Promise<void> | void;
   placeholder?: string;
+  isSubmitting?: boolean;
 }
 
 const CommentForm: React.FC<CommentFormProps> = ({
   onSubmit,
   placeholder = "Write your comment...",
+  isSubmitting = false,
 }) => {
   const form = useForm<CommentFormData>({
     resolver: zodResolver(commentSchema),
@@ -106,13 +108,13 @@ const CommentForm: React.FC<CommentFormProps> = ({
         <div className="flex justify-end space-x-3">
           <Button
             type="submit"
-            disabled={!form.formState.isValid || form.formState.isSubmitting}
+            disabled={!form.formState.isValid || isSubmitting}
             className="flex items-center space-x-2"
           >
-            {form.formState.isSubmitting && (
+            {isSubmitting && (
               <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
             )}
-            <span>Post Comment</span>
+            <span>{isSubmitting ? "Posting..." : "Post Comment"}</span>
           </Button>
         </div>
       </form>

@@ -1,73 +1,116 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useEffect } from "react";
 import CommentForm from "./CommentForm";
 import CommentFeed from "./CommentFeed";
 import { useSearchParams } from "next/navigation";
-import { useMutation, useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  createComment,
+  getComments,
+  subscribeToComments,
+  supabase,
+} from "@/lib/supabase";
+
+// Types
+interface Comment {
+  id: string;
+  owner_resource_identifier: string;
+  body: string;
+  user_id: string;
+  parent_id?: string;
+  app_id: string;
+  created_at: number;
+  edited_at?: number;
+  user?: {
+    id: string;
+    display_name: string;
+    email?: string;
+    avatar_path?: string;
+  };
+  replies?: Comment[];
+}
 
 const CommentWidget = () => {
   const sp = useSearchParams();
-  const ownerIdentifier = sp.get("ownerIdentifier");
-  const origin = sp.get("origin");
+  const ownerIdentifier = sp.get("ownerIdentifier") ?? "";
   const appKey = sp.get("appKey") ?? "";
+  const queryClient = useQueryClient();
 
-  const getAppQuery = useQuery(api.application.getApp, { appKey });
-  const createCommentMutation = useMutation(api.comments.createComment);
-  // const getAppLoading = useMemo(() => getAppQuery === undefined, [getAppQuery]);
+  // TanStack Query hooks
+  const {
+    data: comments = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["comments", appKey, ownerIdentifier],
+    queryFn: () => getComments({ appKey, ownerIdentifier }),
+    enabled: !!appKey && !!ownerIdentifier,
+  });
 
-  const { isLoading, error, isValidDomain } = useMemo(() => {
-    if (!appKey) {
-      return {
-        isLoading: false,
-        error: "App key is required",
-        isValidDomain: false,
-      };
-    }
+  const createCommentMutation = useMutation({
+    mutationFn: createComment,
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["comments", variables.appKey, variables.ownerIdentifier],
+      });
+    },
+  });
 
-    if (getAppQuery === undefined) {
-      return {
-        isLoading: true,
-        error: null,
-        isValidDomain: false,
-      };
-    }
+  // Set up real-time subscription
+  useEffect(() => {
+    if (!appKey || !ownerIdentifier) return;
 
-    if (getAppQuery === null) {
-      return {
-        isLoading: false,
-        error: "Invalid app key",
-        isValidDomain: false,
-      };
-    }
+    (async () => {
+      await subscribeToComments({
+        appKey,
+        ownerIdentifier,
+        onInsert: () => {
+          // Invalidate and refetch comments
+          queryClient.invalidateQueries({
+            queryKey: ["comments", appKey, ownerIdentifier],
+          });
+        },
+        onUpdate: () => {
+          console.log("Comment updated");
+          queryClient.invalidateQueries({
+            queryKey: ["comments", appKey, ownerIdentifier],
+          });
+        },
+        onDelete: () => {
+          queryClient.invalidateQueries({
+            queryKey: ["comments", appKey, ownerIdentifier],
+          });
+        },
+      });
+    })();
 
-    if (!origin) {
-      return {
-        isLoading: false,
-        error: "Origin domain is required",
-        isValidDomain: false,
-      };
-    }
-
-    const isValidDomain = getAppQuery.allowedDomains.some((domain) => {
-      return origin === domain;
-    });
-
-    if (!isValidDomain) {
-      return {
-        isLoading: false,
-        error: `Domain '${origin}' is not allowed for this app`,
-        isValidDomain: false,
-      };
-    }
-
-    return {
-      isLoading: false,
-      error: null,
-      isValidDomain: true,
+    return () => {
+      // if (subscription) {
+      //   subscription.unsubscribe();
+      // }
     };
-  }, [getAppQuery, appKey, origin]);
+  }, [appKey, ownerIdentifier, queryClient]);
+
+  // Handle comment submission
+  const handleCommentSubmit = async (payload: {
+    body: string;
+    name: string;
+    email?: string;
+  }) => {
+    if (!appKey || !ownerIdentifier) return;
+
+    createCommentMutation.mutate({
+      appKey,
+      ownerIdentifier,
+      body: payload.body,
+      user: {
+        authType: "external",
+        displayName: payload.name,
+        email: payload.email,
+      },
+    });
+  };
 
   if (isLoading) {
     return (
@@ -101,41 +144,23 @@ const CommentWidget = () => {
             <h3 className="text-sm font-medium text-red-800">
               Comments unavailable
             </h3>
-            <p className="text-sm text-red-700 mt-1">{error}</p>
+            <p className="text-sm text-red-700 mt-1">{error.message}</p>
           </div>
         </div>
       </div>
     );
   }
 
-  if (!isValidDomain || !getAppQuery) {
-    return null;
-  }
-
   return (
     <>
       <CommentForm
-        onSubmit={async (payload) => {
-          console.log("Submitting comment:", payload);
-          await createCommentMutation({
-            appKey: appKey,
-            body: payload.body,
-            ownerIdentifier: ownerIdentifier ?? "",
-            user: {
-              name: payload.name,
-            },
-          });
-        }}
+        onSubmit={handleCommentSubmit}
+        isSubmitting={createCommentMutation.isPending}
       />
 
-      {getAppQuery !== undefined && (
-        <div className="mt-4">
-          <CommentFeed
-            ownerIdentifier={ownerIdentifier ?? ""}
-            appId={getAppQuery._id}
-          />
-        </div>
-      )}
+      <div className="mt-4">
+        <CommentFeed comments={comments} />
+      </div>
     </>
   );
 };
